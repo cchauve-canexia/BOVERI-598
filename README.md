@@ -11,13 +11,13 @@ references linked to diseases for five of them:
 
 ```
 id                    reference
-chr3:178936116:GT:C   <a href="https://cancer.sanger.ac.uk/cosmic/mutation/overview?id=22536616">COSMIC 22536616</a>,https://www.ncbi.nlm.nih.gov/snp/rs587777795,https://www.ncbi.nlm.nih.gov/clinvar/variation/446487/
+chr3:178936116:GT:C   COSMIC:2253661, dbSNP:rs587777795,ClinVar:446487
 chr19:4117563:GCTT:G  nan
-chr15:90631917:TC:T   https://cancer.sanger.ac.uk/cosmic/mutation/overview?id=28065520
+chr15:90631917:TC:T   COSMIC:28065520
 chr12:25398297:C:CCG  nan
-chr12:25380252:TC:T   https://cancer.sanger.ac.uk/cosmic/mutation/overview?id=21681080
-chr1:156846307:GC:G   https://cancer.sanger.ac.uk/cosmic/mutation/overview?id=74827609
-chr10:89717769:TA:T   https://cancer.sanger.ac.uk/cosmic/mutation/overview?id=35243223,https://www.ncbi.nlm.nih.gov/clinvar/variation/92828/
+chr12:25380252:TC:T   COSMIC:21681080
+chr1:156846307:GC:G   COMIC:74827609
+chr10:89717769:TA:T   COSMIC:35243223,ClinVar:92828
 ```
 
 Notes.
