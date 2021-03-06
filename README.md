@@ -1,5 +1,6 @@
 # BOVERI-598
-Annotating black list indels
+### Annotating black list indels
+##### Cedric Chauve, March 5, 2021
 
 The indel caller performances on clinical and commercial dilution series is
 heavily impacted by the use of a blacklist of 7 indels. It is important to have
@@ -20,10 +21,10 @@ chr10:89717769:TA:T   https://cancer.sanger.ac.uk/cosmic/mutation/overview?id=35
 ```
 
 Notes.
-For chr3:178936116:GT:C, the provided COSMIC reference is only for the GT
+For `chr3:178936116:GT:C`, the provided COSMIC reference is only for the GT
 deletion.  
-For chr15:90631917:TC:T, chr12:25380252:TC:T, chr1:156846307:GC:G and
-the chr10:89717769:TA:T COSMIC entries assume deletion of the last base of the
+For `chr15:90631917:TC:T`, `chr12:25380252:TC:T`, `chr1:156846307:GC:G` and
+`chr10:89717769:TA:T` the COSMIC entries assume deletion of the last base of the
 homopolymer while my encoding is based on deletion of the first base.
 
 ### SnpEff annotation
