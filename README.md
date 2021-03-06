@@ -11,7 +11,7 @@ references linked to diseases for five of them:
 
 ```
 id                    reference
-chr3:178936116:GT:C   https://cancer.sanger.ac.uk/cosmic/mutation/overview?id=22536616,https://www.ncbi.nlm.nih.gov/snp/rs587777795,https://www.ncbi.nlm.nih.gov/clinvar/variation/446487/
+chr3:178936116:GT:C   <a href="https://cancer.sanger.ac.uk/cosmic/mutation/overview?id=22536616">COSMIC 22536616</a>,https://www.ncbi.nlm.nih.gov/snp/rs587777795,https://www.ncbi.nlm.nih.gov/clinvar/variation/446487/
 chr19:4117563:GCTT:G  nan
 chr15:90631917:TC:T   https://cancer.sanger.ac.uk/cosmic/mutation/overview?id=28065520
 chr12:25398297:C:CCG  nan
