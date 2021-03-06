@@ -11,7 +11,7 @@ references linked to diseases for five of them:
 
 ```
 id                    reference
-chr3:178936116:GT:C   COSMIC:2253661, dbSNP:rs587777795,ClinVar:446487
+chr3:178936116:GT:C   COSMIC:2253661,dbSNP:rs587777795,ClinVar:446487
 chr19:4117563:GCTT:G  nan
 chr15:90631917:TC:T   COSMIC:28065520
 chr12:25398297:C:CCG  nan
