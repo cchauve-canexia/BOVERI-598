@@ -110,3 +110,19 @@ chr12:25380252:TC:T     460     0.0     11.99   1.74      0.02      1.0       0.
 chr1:156846307:GC:G     461     0.09    34.42   6.47      0.0       1.0       0.63
 chr10:89717769:TA:T     456     0.32    3.05    0.51      0.14      1.0       0.84
 ```
+
+Last I looked for indels that appear in at least 450 samples with a mean VAF at
+least 0.51, i.e. have similar features than the blacklisted indels. The list is
+below:
+
+```
+indel                   nb_occ  min_vaf max_vaf mean_vaf  min_ctrl  max_ctrl  mean_ctrl
+chr15:90631917:T:TC     456     0.32    0.96    0.58      0.54      1.0       0.9
+chr17:7572962:GT:G      456     0.43    2.58    0.77      0.29      1.0       0.91
+chr19:3118933:TG:T      456     0.36    0.94    0.54      0.53      1.0       0.92
+chr2:29443611:TC:T      456     0.37    1.09    0.65      0.54      1.0       0.92
+chr2:29445297:GGGA:G    456     0.99    2.23    1.38      0.64      1.0       0.92
+chr4:1806180:G:GC       456     0.34    1.12    0.69      0.41      1.0       0.85
+chr4:1806180:GC:G       456     0.46    1.18    0.78      0.54      1.0       0.9
+chrX:27130922:TA:T      456     0.21    50.0    3.97      0.01      1.0       0.35
+```
