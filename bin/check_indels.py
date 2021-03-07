@@ -4,6 +4,7 @@
 Check the presence of a set of indels in observed indels
 """
 import argparse
+from collections import defaultdict
 import numpy as np
 import os
 import pandas as pd
@@ -115,7 +116,6 @@ if __name__ == "__main__":
     # Input file
     ARGS_RUNS_FILE = ['runs_file', None, 'Runs CSV file']
     ARGS_TSV_INDELS_FILE = ['tsv_indels_file', None, 'Checked indels file']
-    ARGS_MIN_VAF = ['-m', '--min_vaf', 'Min VAF to consider indels']
     parser = argparse.ArgumentParser(description='Indels testing: checking indels occurrences')
     parser.add_argument(ARGS_RUNS_FILE[0],
                         type=str,
@@ -123,10 +123,6 @@ if __name__ == "__main__":
     parser.add_argument(ARGS_TSV_INDELS_FILE[0],
                         type=str,
                         help=ARGS_TSV_INDELS_FILE[2])
-    parser.add_argument(ARGS_MIN_VAF[0],
-                        ARGS_MIN_VAF[1],
-                        type=float,
-                        help=ARGS_MIN_VAF[2])
     args = parser.parse_args()
     # Reading runs
     RUNS_DF = pd.read_csv(args.runs_file, sep=',', header=None, names=['run', RUN_ID])
@@ -175,20 +171,29 @@ if __name__ == "__main__":
         mean_control = round(np.mean(indel_df[CONTROL]), 2)
         print(f"{indel[CHR]}:{indel[POS]}:{indel[REF]}:{indel[ALT]}\t{nb_occurrences}\t{min_vaf}\t{max_vaf}\t{mean_vaf}\t{min_control}\t{max_control}\t{mean_control}")
 
+    print('\nindel\tnb_occ\tmin_vaf\tmax_vaf\tmean_vaf\tmin_ctrl\tmax_ctrl\tmean_ctrl')
+    INDELS_DF = RUNS_INDELS_DF.copy()
+    INDELS_GROUPS = INDELS_DF.groupby(by=[CHR, POS, REF, ALT])
+    for indel, indel_df in INDELS_GROUPS:
+        if indel not in checked_indels_list:
+            nb_indels = len(list(indel_df.index))
+            mean_vaf = np.mean(indel_df[VAF])
+            if nb_indels >= min_nb_occurrences and mean_vaf >= min_mean_vaf:
+                max_vaf = round(np.max(indel_df[VAF]), 2)
+                min_vaf = round(np.nanmin(indel_df[VAF]), 2)
+                mean_vaf = round(np.mean(indel_df[VAF]), 2)
+                max_control = round(np.max(indel_df[CONTROL]), 2)
+                min_control = round(np.nanmin(indel_df[CONTROL]), 2)
+                mean_control = round(np.mean(indel_df[CONTROL]), 2)
+                print(f"{indel[0]}:{indel[1]}:{indel[2]}:{indel[3]}\t{nb_occurrences}\t{min_vaf}\t{max_vaf}\t{mean_vaf}\t{min_control}\t{max_control}\t{mean_control}")
+
     # Looking for potential widespread indels
-    if args.min_vaf is not None:
-        print('\nindel\tnb_occ\tmin_vaf\tmax_vaf\tmean_vaf\tmin_ctrl\tmax_ctrl\tmean_ctrl')
-        INDELS_DF = RUNS_INDELS_DF.loc[RUNS_INDELS_DF[VAF]>=args.min_vaf]
-        INDELS_GROUPS = INDELS_DF.groupby(by=[CHR, POS, REF, ALT])
-        for indel, indel_df in INDELS_GROUPS:
-            if indel not in checked_indels_list:
-                nb_indels = len(list(indel_df.index))
-                mean_vaf = np.mean(indel_df[VAF])
-                if nb_indels >= min_nb_occurrences and mean_vaf >= min_mean_vaf:
-                    max_vaf = round(np.max(indel_df[VAF]), 2)
-                    min_vaf = round(np.nanmin(indel_df[VAF]), 2)
-                    mean_vaf = round(np.mean(indel_df[VAF]), 2)
-                    max_control = round(np.max(indel_df[CONTROL]), 2)
-                    min_control = round(np.nanmin(indel_df[CONTROL]), 2)
-                    mean_control = round(np.mean(indel_df[CONTROL]), 2)
-                    print(f"{indel[0]}:{indel[1]}:{indel[2]}:{indel[3]}\t{nb_occurrences}\t{min_vaf}\t{max_vaf}\t{mean_vaf}\t{min_control}\t{max_control}\t{mean_control}")
+    NB_OCC = defaultdict(int)
+    for indel, indel_df in INDELS_GROUPS:
+        nb_indels = len(list(indel_df.index))
+        NB_OCC[nb_indels] += 1
+    OCC_KEYS = list(NB_OCC.keys())
+    OCC_KEYS.sort()
+    print('\nnb_occurrences\tnb_indels')
+    for nb_occ in OCC_KEYS:
+        print(f"{nb_occ}\t{NB_OCC[nb_occ]}")
