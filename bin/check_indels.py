@@ -5,9 +5,11 @@ Check the presence of a set of indels in observed indels
 """
 import argparse
 from collections import defaultdict
+import matplotlib.pyplot as plt
 import numpy as np
 import os
 import pandas as pd
+import seaborn as sns
 import yaml
 
 # Dataframes column keys: should be imported from vcf_utils.py
@@ -124,6 +126,7 @@ if __name__ == "__main__":
                         type=str,
                         help=ARGS_TSV_INDELS_FILE[2])
     args = parser.parse_args()
+    out_pref = args.runs_file.replace('data', 'results').replace('.tsv', '')
     # Reading runs
     RUNS_DF = pd.read_csv(args.runs_file, sep=',', header=None, names=['run', RUN_ID])
     # Reading checked indels file
@@ -137,12 +140,14 @@ if __name__ == "__main__":
         ][SAMPLE].unique()
     )
     NB_SAMPLES = len(SAMPLES_LIST)
+
+    # Processing checked indels
+    out_file = open(f"{out_pref}_out_1.tsv", 'w')
     min_nb_occurrences = NB_SAMPLES
     min_mean_vaf = 1.0
-    # Processing indels for all parameters and threshold settings
     checked_indels_list = []
-    print(f"Number of non-Blank samples: {len(SAMPLES_LIST)}")
-    print('indel\tnb_occ\tmin_vaf\tmax_vaf\tmean_vaf\tmin_ctrl\tmax_ctrl\tmean_ctrl')
+    out_file.write(f"# Number of non-Blank samples: {len(SAMPLES_LIST)}")
+    out_file.write('\nindel\tnb_occ\tmin_vaf\tmax_vaf\tmean_vaf\tmin_ctrl\tmax_ctrl\tmean_ctrl')
     for _, indel_row in CHECKED_INDELS_DF.iterrows():
         indel_1 = indel_row[INDEL_ID].split(':')
         indel = {
@@ -169,9 +174,12 @@ if __name__ == "__main__":
         max_control = round(np.max(indel_df[CONTROL]), 2)
         min_control = round(np.nanmin(indel_df[CONTROL]), 2)
         mean_control = round(np.mean(indel_df[CONTROL]), 2)
-        print(f"{indel[CHR]}:{indel[POS]}:{indel[REF]}:{indel[ALT]}\t{nb_occurrences}\t{min_vaf}\t{max_vaf}\t{mean_vaf}\t{min_control}\t{max_control}\t{mean_control}")
+        out_file.write(f"\n{indel[CHR]}:{indel[POS]}:{indel[REF]}:{indel[ALT]}\t{nb_occurrences}\t{min_vaf}\t{max_vaf}\t{mean_vaf}\t{min_control}\t{max_control}\t{mean_control}")
+    out_file.close()
 
-    print('\nindel\tnb_occ\tmin_vaf\tmax_vaf\tmean_vaf\tmin_ctrl\tmax_ctrl\tmean_ctrl')
+    # Statistics of indels with similar features
+    out_file = open(f"{out_pref}_out_2.tsv", 'w')
+    out_file.write('indel\tnb_occ\tmin_vaf\tmax_vaf\tmean_vaf\tmin_ctrl\tmax_ctrl\tmean_ctrl')
     INDELS_DF = RUNS_INDELS_DF.copy()
     INDELS_GROUPS = INDELS_DF.groupby(by=[CHR, POS, REF, ALT])
     for indel, indel_df in INDELS_GROUPS:
@@ -185,15 +193,51 @@ if __name__ == "__main__":
                 max_control = round(np.max(indel_df[CONTROL]), 2)
                 min_control = round(np.nanmin(indel_df[CONTROL]), 2)
                 mean_control = round(np.mean(indel_df[CONTROL]), 2)
-                print(f"{indel[0]}:{indel[1]}:{indel[2]}:{indel[3]}\t{nb_occurrences}\t{min_vaf}\t{max_vaf}\t{mean_vaf}\t{min_control}\t{max_control}\t{mean_control}")
+                out_file.write(f"{indel[0]}:{indel[1]}:{indel[2]}:{indel[3]}\t{nb_occurrences}\t{min_vaf}\t{max_vaf}\t{mean_vaf}\t{min_control}\t{max_control}\t{mean_control}")
+    out_file.close()
 
-    # Looking for potential widespread indels
+    # Generating a scatter plot for all indels occurrences versus mean VAF
+    # and mean control penalty, recording multiplicity of all indels
     NB_OCC = defaultdict(int)
+    NB_COL, VAF_COL, CTRL_COL, STATUS_COL = 'nb', 'vaf', 'ctrl', 'status'
+    INDELS_GROUPS_DICT = {}
     for indel, indel_df in INDELS_GROUPS:
         nb_indels = len(list(indel_df.index))
+        mean_vaf = indel_df[VAF].mean()
+        mean_ctrl = indel_df[CONTROL].mean()
+        if indel in checked_indels_list:
+            status = 'blacklist'
+        else:
+            status = 'non-blakclist'
+        INDELS_GROUPS_DICT[indel] = {
+            NB_COL: nb_indels, VAF_COL: mean_vaf,
+            CTRL_COL: mean_ctrl, STATUS_COL: status
+        }
         NB_OCC[nb_indels] += 1
     OCC_KEYS = list(NB_OCC.keys())
     OCC_KEYS.sort()
-    print('\nnb_occurrences\tnb_indels')
+    out_file = open(f"{out_pref}_out_3.tsv", 'w')
+    out_file.write('nb_occurrences\tnb_indels')
     for nb_occ in OCC_KEYS:
-        print(f"{nb_occ}\t{NB_OCC[nb_occ]}")
+        out_file.write(f"\n{nb_occ}\t{NB_OCC[nb_occ]}")
+    out_file.close()
+
+    INDELS_GROUPS_DF = pd.DataFrame.from_dict(
+        INDELS_GROUPS_DICT,
+        orient='index',
+        columns=[NB_COL, VAF_COL, CTRL_COL, STATUS_COL]
+    )
+    fig, axes = plt.subplots(nrows=2, ncols=1, figsize=(20, 20))
+    vaf_plot = sns.scatterplot(
+        data=INDELS_GROUPS_DF,
+        x=NB_COL, y=VAF_COL, hue=STATUS_COL,
+        ax=axes[0]
+    )
+    vaf_plot = sns.scatterplot(
+        data=INDELS_GROUPS_DF,
+        x=NB_COL, y=CTRL_COL, hue=STATUS_COL,
+        ax=axes[1]
+    )
+    axes[0].set_title(f"All indels, mean VAF versus nb occ.")
+    axes[1].set_title(f"All indels, mean control penalty versus nb occ.")
+plt.savefig(f"{out_pref}_out_4.png")

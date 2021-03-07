@@ -45,12 +45,12 @@ chr10:89717769:TA:T   T|frameshift_variant&splice_region_variant|HIGH|PTEN|PTEN|
 ```
 id                    amplicons coordinates                                                         comments
 chr3:178936116:GT:C   CG001v5.0.59:chr3:178936049:178936141,CG001v4.0.9:chr3:178936036:178936133    within reverse primer in CG001v4.0.9, so not called in this amplicon
-chr19:4117563:GCTT:G  CG001v3.4.62:chr19:4117483:4117588                                            close to reverse primer
-chr15:90631917:TC:T   CG001v3.4.43:chr15:90631812:90631959                                          --
-chr12:25398297:C:CCG  CG001v3.4.56:chr12:25398214:25398331,CG001v5.0.57:chr12:25398250:25398330     --
+chr19:4117563:GCTT:G  CG001v3.4.62:chr19:4117483:4117588                                            close to reverse primer (5 bases before primer)
+chr15:90631917:TC:T   CG001v3.4.43:chr15:90631812:90631959                                          not close to a primer (closest one, reverse, 22 bases away)
+chr12:25398297:C:CCG  CG001v3.4.56:chr12:25398214:25398331,CG001v5.0.57:chr12:25398250:25398330     not close to a primer in both amplicons
 chr12:25380252:TC:T   CG001v3.4.59:chr12:25380228:25380356,CG001v5.0.73:chr12:25380218:25380317     close to forward primer in CG001v3.4.59
-chr1:156846307:GC:G   CG001v5.0.127b:chr1:156846258:156846363,CG001v5.0.11:chr1:156846258:156846348 --
-chr10:89717769:TA:T   CG001v5.0.43:chr10:89717712:89717833                                          --
+chr1:156846307:GC:G   CG001v5.0.127b:chr1:156846258:156846363,CG001v5.0.11:chr1:156846258:156846348 not close to a primer in any of the two amplicons
+chr10:89717769:TA:T   CG001v5.0.43:chr10:89717712:89717833                                          not close to a primer
 ```
 
 ### Flanking sequences
@@ -95,10 +95,11 @@ indels occur in them:
 - CG001Qv51Next034,210217_NB551381_0120_AHMHG7AFX2
 ```
 
-The table below shows that these indels are observed (which does not imply they
-are called) in most samples, with a high mean VAF, although the min. VAF can be
-low, and that they generally occur in the normal female with a relatively
-similar VAF (column mean_ctrl) but for the indel in chr19.
+The table below (file `results/NextSeq_v51_out_1.tsv`) shows that these indels are 
+observed (which does not imply they are called) in most samples, with a high mean 
+VAF, although the min. VAF can be low, and that they generally occur in the 
+normal female with a relatively similar VAF (column mean_ctrl) but for the indel 
+in chr19.
 
 ```
 indel                   nb_occ  min_vaf max_vaf mean_vaf  min_ctrl  max_ctrl  mean_ctrl
@@ -111,9 +112,11 @@ chr1:156846307:GC:G     461     0.09    34.42   6.47      0.0       1.0       0.
 chr10:89717769:TA:T     456     0.32    3.05    0.51      0.14      1.0       0.84
 ```
 
+### Similar indels
+
 Last I looked for indels that appear in at least 450 samples with a mean VAF at
 least 0.51, i.e. have similar features than the blacklisted indels. The list is
-below:
+below (file `results/NextSeq_v51_out_2.tsv`):
 
 ```
 indel                   nb_occ  min_vaf max_vaf mean_vaf  min_ctrl  max_ctrl  mean_ctrl
@@ -129,7 +132,13 @@ chrX:27130922:TA:T      456     0.21    50.0    3.97      0.01      1.0       0.
 chrX:27130923:AA:T      456     0.0     34.55   1.51      0.08      1.0       0.97
 ```
 
-Note that there are many groups of widespread indels. For example there are
+Note. that there are many groups of widespread indels. For example there are
 100 different indels that are observed in all 461 samples, although most of the
 time with a very low average VAF which explains why they do not appear in this
-list.
+list (file `results/NextSeq_v51_out_3.tsv`).
+
+### Figures
+
+The file `results/NextSeq_v51_out_4.png` shows all observed indels, with no filtering
+and shows scatter plots of the number of occurrences versus the mean VAF and the mean
+control penalty.
