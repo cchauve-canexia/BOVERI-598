@@ -1,6 +1,6 @@
 # BOVERI-598
 ### Annotating black list indels
-##### Cedric Chauve, March 5, 2021
+##### Cedric Chauve, March 7, 2021
 
 The indel caller performances on clinical and commercial dilution series is
 heavily impacted by the use of a blacklist of 7 indels. It is important to have
