@@ -64,7 +64,7 @@ Five out of the 7 indels are linked to low-complexity regions:
 
 ### Occurrences in NextSeq v51 runs
 
-The 417 non-Blank samples of the following runs were analyzed to see if these
+The 461 non-Blank samples of the following runs were analyzed to see if these
 indels occur in them:
 ```
 - CG001Qv51Next001,200831_NB551381_0081_AHFY5KAFX2
@@ -79,6 +79,8 @@ indels occur in them:
 - CG001Qv51Next010,201029_NB551381_0096_AHHKM7AFX2
 - CG001Qv51Next011,201102_NB551381_0097_AHHKHWAFX2
 - CG001Qv51Next012,201104_NB551381_0098_AHHKK5AFX2
+- CG001Qv51Next013,201112_NB551381_0099_AHJM32AFX2
+- CG001Qv51Next014,201117_NB551381_0100_AHJKK3AFX2
 - CG001Qv51Next015,201120_NB551381_0101_AHJLKMAFX2
 - CG001Qv51Next016,201123_NB551381_0102_AHJLHYAFX2
 - CG001Qv51Next017,201125_NB551381_0103_AHJLHWAFX2
@@ -100,11 +102,11 @@ similar VAF (column mean_ctrl) but for the indel in chr19.
 
 ```
 indel                   nb_occ  min_vaf max_vaf mean_vaf  min_ctrl  max_ctrl  mean_ctrl
-chr3:178936116:GT:C     417     17.12   52.42   43.86     0.81      1.0       0.94
-chr19:4117563:GCTT:G    412     0.07    4.01    1.31      0.02      0.99      0.13
-chr15:90631917:TC:T     417     0.64    32.05   4.07      0.03      1.0       0.81
-chr12:25398297:C:CCG    410     0.0     10.58   4.37      0.34      1.0       0.77
-chr12:25380252:TC:T     416     0.0     11.99   1.84      0.02      1.0       0.74
-chr1:156846307:GC:G     417     0.09    34.42   6.98      0.0       1.0       0.63
-chr10:89717769:TA:T     412     0.32    3.05    0.52      0.14      1.0       0.83
+chr3:178936116:GT:C     461     17.12   57.03   43.82     0.74      1.0       0.94
+chr19:4117563:GCTT:G    456     0.02    4.01    1.27      0.02      1.0       0.15
+chr15:90631917:TC:T     461     0.64    32.05   3.77      0.03      1.0       0.82
+chr12:25398297:C:CCG    450     0.0     10.58   4.35      0.34      1.0       0.78
+chr12:25380252:TC:T     460     0.0     11.99   1.74      0.02      1.0       0.75
+chr1:156846307:GC:G     461     0.09    34.42   6.47      0.0       1.0       0.63
+chr10:89717769:TA:T     456     0.32    3.05    0.51      0.14      1.0       0.84
 ```
