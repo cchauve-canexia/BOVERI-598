@@ -200,18 +200,23 @@ if __name__ == "__main__":
     # and mean control penalty, recording multiplicity of all indels
     NB_OCC = defaultdict(int)
     NB_COL, VAF_COL, CTRL_COL, STATUS_COL = 'nb', 'vaf', 'ctrl', 'status'
+    SUPP_COL, OV_COL, COMP_COL = 'support', 'overlap', 'complexity'
     INDELS_GROUPS_DICT = {}
     for indel, indel_df in INDELS_GROUPS:
         nb_indels = len(list(indel_df.index))
         mean_vaf = indel_df[VAF].mean()
         mean_ctrl = indel_df[CONTROL].mean()
+        mean_supp = indel_df[SUPPORT].mean()
+        mean_ov = indel_df[OVERLAP].mean()
+        mean_comp = indel_df[COMPLEXITY].mean()
         if indel in checked_indels_list:
             status = 'blacklist'
         else:
             status = 'non-blakclist'
         INDELS_GROUPS_DICT[indel] = {
             NB_COL: nb_indels, VAF_COL: mean_vaf,
-            CTRL_COL: mean_ctrl, STATUS_COL: status
+            CTRL_COL: mean_ctrl, STATUS_COL: status,
+            SUPP_COL: mean_supp, OV_COL: mean_ov, COMP_COL: mean_comp
         }
         NB_OCC[nb_indels] += 1
     OCC_KEYS = list(NB_OCC.keys())
@@ -225,19 +230,40 @@ if __name__ == "__main__":
     INDELS_GROUPS_DF = pd.DataFrame.from_dict(
         INDELS_GROUPS_DICT,
         orient='index',
-        columns=[NB_COL, VAF_COL, CTRL_COL, STATUS_COL]
+        columns=[NB_COL, VAF_COL, CTRL_COL, STATUS_COL, SUPP_COL, OV_COL, COMP_COL]
     )
     fig, axes = plt.subplots(nrows=2, ncols=1, figsize=(20, 20))
     vaf_plot = sns.scatterplot(
         data=INDELS_GROUPS_DF,
         x=NB_COL, y=VAF_COL, hue=STATUS_COL,
-        ax=axes[0]
+        ax=axes[0], alpha=0.5
     )
     vaf_plot = sns.scatterplot(
         data=INDELS_GROUPS_DF,
         x=NB_COL, y=CTRL_COL, hue=STATUS_COL,
-        ax=axes[1]
+        ax=axes[1], alpha=0.5
     )
     axes[0].set_title(f"All indels, mean VAF versus nb occ.")
     axes[1].set_title(f"All indels, mean control penalty versus nb occ.")
-plt.savefig(f"{out_pref}_out_4.png")
+    plt.savefig(f"{out_pref}_out_4.png")
+
+    fig, axes = plt.subplots(nrows=3, ncols=1, figsize=(20, 30))
+    vaf_plot = sns.scatterplot(
+        data=INDELS_GROUPS_DF,
+        x=NB_COL, y=SUPP_COL, hue=STATUS_COL,
+        ax=axes[0], alpha=0.5
+    )
+    vaf_plot = sns.scatterplot(
+        data=INDELS_GROUPS_DF,
+        x=NB_COL, y=OV_COL, hue=STATUS_COL,
+        ax=axes[1], alpha=0.5
+    )
+    vaf_plot = sns.scatterplot(
+        data=INDELS_GROUPS_DF,
+        x=NB_COL, y=COMP_COL, hue=STATUS_COL,
+        ax=axes[2], alpha=0.5
+    )
+    axes[0].set_title(f"All indels, mean support penalty versus nb occ.")
+    axes[1].set_title(f"All indels, mean overlap penalty versus nb occ.")
+    axes[2].set_title(f"All indels, mean complexity penalty versus nb occ.")
+    plt.savefig(f"{out_pref}_out_5.png")
