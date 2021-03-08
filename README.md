@@ -141,4 +141,5 @@ list (file `results/NextSeq_v51_out_3.tsv`).
 
 The file `results/NextSeq_v51_out_4.png` shows all observed indels, with no filtering
 and shows scatter plots of the number of occurrences versus the mean VAF and the mean
-control penalty.
+control penalty. The file `results/NextSeq_v51_out_5.png` shows the mean support, 
+overlap and complexity penalties for the same set of all observed indels.
